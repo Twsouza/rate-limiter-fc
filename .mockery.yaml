@@ -1,0 +1,8 @@
+packages:
+  rate-limiter/cache:
+    interfaces:
+      CacheService:
+  rate-limiter/ratelimiter:
+    interfaces:
+      RateLimiterService:
+
