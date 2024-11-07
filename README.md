@@ -155,3 +155,37 @@ The implementation handles concurrency using Redis atomic operations:
 - **Blocking Checks**: The middleware checks for blocking and increments counters in a way that minimizes race conditions.
 
 ## Testing
+
+### Unit and Integration Tests
+
+Run the tests using the following command:
+
+```bash
+go test ./...
+```
+
+### Load Testing
+
+Using the Makefile. Run the application and tests:
+
+```bash
+make run
+```
+
+This will:
+
+* Build the Docker images.
+* Start the services.
+* Wait for the application to be ready.
+* Run the k6 stress test.
+* Clean up after testing
+
+```bash
+make down
+```
+
+Or, to also remove volumes:
+
+```bash
+make clean
+```

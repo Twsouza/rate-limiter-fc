@@ -1,0 +1,39 @@
+version: '3.7'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - REDIS_ADDR=redis:6379
+      - REDIS_PASSWORD=
+      - IP_RATE_LIMIT=50
+      - IP_BLOCK_DURATION=1
+      - TOKEN_RATE_LIMIT=50
+      - TOKEN_BLOCK_DURATION=1
+      - TOKEN_LIMITS={"abc123":{"limit":100,"block_duration":1},"def456":{"limit":70,"block_duration":1}}
+    depends_on:
+      - redis
+    networks:
+      - ratelimiter_test
+  redis:
+    image: "redis:alpine"
+    networks:
+      - ratelimiter_test
+  k6:
+    image: grafana/k6:latest
+    volumes:
+      - ./load_test.js:/scripts/load_test.js:ro
+      - ./k6_results:/results
+    working_dir: /scripts
+    command: ["run", "/scripts/load_test.js", "--out", "json=/results/k6_results.json"]
+    networks:
+      - ratelimiter_test
+    depends_on:
+      - web
+
+networks:
+  ratelimiter_test:
